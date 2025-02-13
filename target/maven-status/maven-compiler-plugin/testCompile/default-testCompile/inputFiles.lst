@@ -1,13 +1,1 @@
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\controller\AuthController.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\controller\TaskController.java
 C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\gerenciador\GerenciadorApplicationTests.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\models\Task.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\models\TaskStatus.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\models\User.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\repositories\TaskRepository.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\repositories\UserRepository.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\security\JwtFilter.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\security\JwtUtil.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\security\SecurityConfig.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\services\TaskService.java
-C:\repositorio\GitHub\gerenciador-tarefas-back\src\test\java\com\gerenciadortarefas\services\UserService.java

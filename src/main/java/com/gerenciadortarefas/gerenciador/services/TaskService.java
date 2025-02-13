@@ -1,7 +1,10 @@
 package com.gerenciadortarefas.gerenciador.services;
 
+import com.gerenciadortarefas.gerenciador.controller.dto.CreateTaskDto;
 import com.gerenciadortarefas.gerenciador.entities.*;
 import com.gerenciadortarefas.gerenciador.repositories.TaskRepository;
+import com.gerenciadortarefas.gerenciador.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +21,17 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserService userService; // Serviço para obter informações do usuário atual
 
-    public Page<Task> getAllTasks(Pageable pageable) {
-        User currentUser = userService.getCurrentUser(); // Obter o usuário atual
+    public List<Task> getAllTasks(Pageable pageable, String username) {
+        System.out.println("username: " + username);
+        User currentUser = userRepository.findByName(username).orElseThrow(); // Obter o usuário atual
+        System.out.println("currentUser: " + currentUser);
+        System.out.println("pageable: " + pageable);       
+        System.out.println(taskRepository.findByAssignedTo(currentUser, pageable).toString());
         return taskRepository.findByAssignedTo(currentUser, pageable);
     }
 
@@ -31,9 +41,20 @@ public class TaskService {
                 .filter(task -> task.getAssignedTo().equals(currentUser)); // Validação de acesso
     }
 
-    public Task createTask(Task task) {
-        validateDeadline(task.getDeadline());
+    public Task createTask(CreateTaskDto dto) {
+        var task = new Task();
+        System.out.println("dto: " + dto);
+        User user = userRepository.findByName(dto.assignedTo()).orElseThrow();
+
+        validateDeadline(dto.deadline());
+        validateTitleDuplication(dto.title());
+
+        task.setDescription(dto.description());
+        task.setStatus(dto.status());
+        task.setTitle(dto.title());
         task.setCreatedOn(LocalDate.now()); // Garante que createdOn seja gerado automaticamente
+        task.setAssignedTo(user);
+        task.setDeadline(dto.deadline()); // Modificar para o prazo definido pelo usuário
         return taskRepository.save(task);
     }
 
@@ -49,9 +70,8 @@ public class TaskService {
     }
 
     public boolean deleteTask(Long id) {
-        User currentUser = userService.getCurrentUser();
         return taskRepository.findById(id)
-                .filter(task -> task.getAssignedTo().equals(currentUser)) // Validação de acesso
+                .filter(task -> task.getId().equals(id)) // Validação de acesso
                 .map(task -> {
                     taskRepository.delete(task);
                     return true;
@@ -66,12 +86,6 @@ public class TaskService {
 
     private void validateTitleDuplication(String title) {
         if (taskRepository.existsByTitle(title)) {
-            throw new IllegalArgumentException("Já existe uma tarefa com este título.");
-        }
-    }
-
-    private void validateTitleDuplication(String title, Long id) {
-        if (taskRepository.existsByTitleAndIdNot(title, id)) {
             throw new IllegalArgumentException("Já existe uma tarefa com este título.");
         }
     }

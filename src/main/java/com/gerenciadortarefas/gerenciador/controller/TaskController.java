@@ -1,5 +1,6 @@
 package com.gerenciadortarefas.gerenciador.controller;
 
+import com.gerenciadortarefas.gerenciador.controller.dto.CreateTaskDto;
 import com.gerenciadortarefas.gerenciador.entities.*;
 import com.gerenciadortarefas.gerenciador.services.TaskService;
 
@@ -21,8 +22,8 @@ public class TaskController {
 
     // GET /tasks - Listar todas as tarefas com paginação e ordenação
     @GetMapping
-    public ResponseEntity<Page<Task>> getAllTasks(Pageable pageable) {
-        return ResponseEntity.ok(taskService.getAllTasks(pageable));
+    public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, @RequestParam(required = false) String user) {
+        return ResponseEntity.ok(taskService.getAllTasks(pageable, user));
     }
 
     // GET /tasks/{id} - Buscar uma tarefa específica
@@ -34,8 +35,8 @@ public class TaskController {
 
     // POST /tasks - Criar uma nova tarefa
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        return ResponseEntity.ok(taskService.createTask(task));
+    public ResponseEntity<Task> createTask(@RequestBody CreateTaskDto dto) {
+        return ResponseEntity.ok(taskService.createTask(dto));
     }
 
     // PUT /tasks/{id} - Atualizar uma tarefa existente
@@ -58,8 +59,13 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    /**
+     * Exception handler for {@link IllegalArgumentException}.
+     * Returns a 400 Bad Request response with the exception message.
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        // Return a 400 Bad Request response with the exception message
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

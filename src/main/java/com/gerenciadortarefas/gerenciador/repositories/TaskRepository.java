@@ -1,7 +1,6 @@
 package com.gerenciadortarefas.gerenciador.repositories;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gerenciadortarefas.gerenciador.entities.Task;
@@ -20,7 +19,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     boolean existsByTitleAndIdNot(String title, Long id);
 
     // Busca todas as tarefas atribuídas a um usuário específico
-    Page<Task> findByAssignedTo(User assignedTo, Pageable pageable);
+    List<Task> findByAssignedTo(User assignedTo, Pageable pageable);
 
     // Filtra as tarefas pelo status e pelo usuário responsável
     List<Task> findByStatusAndAssignedTo(TaskStatus status, User assignedTo);

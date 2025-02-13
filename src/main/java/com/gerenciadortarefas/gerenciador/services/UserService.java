@@ -29,12 +29,17 @@ public class UserService implements UserDetailsService {
 
     public com.gerenciadortarefas.gerenciador.entities.User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("currentUser: " + principal);
+        System.out.println("Tipo de principal: " + principal.getClass().getName());
     
         if (principal instanceof UserDetails) {
+            System.out.println("dentro do if: " + principal.toString());
             String username = ((UserDetails) principal).getUsername();
-            return userRepository.findByName(username.toString()).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
+            return userRepository.findByName(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
         } else {
+            System.out.println("Principal não é do tipo UserDetails. Usando: " + principal.getClass().getName());
             return userRepository.findByName(principal.toString()).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
         }
     }
+    
 }

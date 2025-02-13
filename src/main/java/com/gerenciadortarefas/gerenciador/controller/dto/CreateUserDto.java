@@ -1,5 +1,5 @@
 package com.gerenciadortarefas.gerenciador.controller.dto;
 
-public record CreateUserDto(String name, String email, String password) {
+public record CreateUserDto(String username, String email, String password) {
 
 }
