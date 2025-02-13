@@ -52,8 +52,14 @@ public class TaskController {
     }
 
     // GET /tasks/filter?status={status} - Filtrar tarefas por status
-    @GetMapping("/filter")
+    @GetMapping("/tasks/filter")
     public ResponseEntity<List<Task>> filterTasksByStatus(@RequestParam TaskStatus status) {
-        return ResponseEntity.ok(taskService.filterTasksByStatus(status));
+        List<Task> tasks = taskService.filterTasksByStatus(status);
+        return ResponseEntity.ok(tasks);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

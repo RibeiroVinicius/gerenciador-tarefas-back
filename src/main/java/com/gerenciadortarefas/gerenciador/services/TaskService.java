@@ -32,30 +32,20 @@ public class TaskService {
     }
 
     public Task createTask(Task task) {
-        validateTitleDuplication(task.getTitle());
         validateDeadline(task.getDeadline());
-        
-        task.setCreatedOn(LocalDate.now()); // Geração automática de createdOn
-        User currentUser = userService.getCurrentUser();
-        return taskRepository.findById(task.getId())
-            .filter(existingTask -> existingTask.getAssignedTo().equals(currentUser))
-            .orElse(taskRepository.save(task));
+        task.setCreatedOn(LocalDate.now()); // Garante que createdOn seja gerado automaticamente
+        return taskRepository.save(task);
     }
 
     public Optional<Task> updateTask(Long id, Task taskDetails) {
         validateDeadline(taskDetails.getDeadline());
-        
-        User currentUser = userService.getCurrentUser();
-        return taskRepository.findById(id)
-                .filter(task -> task.getAssignedTo().equals(currentUser)) // Validação de acesso
-                .map(task -> {
-                    validateTitleDuplication(taskDetails.getTitle(), id);
-                    task.setTitle(taskDetails.getTitle());
-                    task.setDescription(taskDetails.getDescription());
-                    task.setStatus(taskDetails.getStatus());
-                    task.setDeadline(taskDetails.getDeadline());
-                    return taskRepository.save(task);
-                });
+        return taskRepository.findById(id).map(task -> {
+            task.setTitle(taskDetails.getTitle());
+            task.setDescription(taskDetails.getDescription());
+            task.setStatus(taskDetails.getStatus());
+            task.setDeadline(taskDetails.getDeadline());
+            return taskRepository.save(task);
+        });
     }
 
     public boolean deleteTask(Long id) {
@@ -69,8 +59,7 @@ public class TaskService {
     }
 
     public List<Task> filterTasksByStatus(TaskStatus status) {
-        User currentUser = userService.getCurrentUser();
-        return taskRepository.findByStatusAndAssignedTo(status, currentUser);
+        return taskRepository.findByStatus(status);
     }
 
     // Métodos de validação
@@ -89,7 +78,7 @@ public class TaskService {
 
     private void validateDeadline(LocalDate deadline) {
         if (deadline != null && deadline.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("O prazo não pode ser uma data passada.");
+            throw new IllegalArgumentException("O prazo (deadline) não pode ser uma data passada.");
         }
     }
 }
